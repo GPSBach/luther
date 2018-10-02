@@ -9,6 +9,9 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+from time import sleep
+import random
+
 BOT_NAME = 'trulia_scrape'
 
 SPIDER_MODULES = ['trulia_scrape.spiders']

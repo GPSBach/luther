@@ -1,3 +1,8 @@
+'''
+trulia_scrape_spyder.py is a scrapy spyder that retrieves public records data from the trulia database
+https://www.trulia.com/property-sitemap
+'''
+
 import scrapy
 from trulia_scrape.items import TruliaScrapeItem
 
