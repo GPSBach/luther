@@ -14,7 +14,7 @@ class Trulia_Scrape(scrapy.Spider):
     ]
 
 
-    def parseZipData(self, response):
+    def parse(self, response):
         root_domain = 'https://www.trulia.com'
         pages = response.xpath('/html/body/div[2]/div/div/div/div[2]/div/ul/li/a/@href').extract()
         while len(pages)!=0:
