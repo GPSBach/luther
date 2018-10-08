@@ -6,9 +6,9 @@ Metis Project Luther - analyzing the effect of transit times on housing prices i
 
 Code structure:
 trulia_scraper - scrapy code to pull listings form trulia
-> trulia.py & trulia_sold.py -> original codes
-> trulia_iterate_sold.py & trulia_iterate_sale.py & trulia_iterate.py -> attempts at iteration through all listings
-> sold_XXX.py & sale_XXX.py -> working codes to pull listings in manually set clumps of 300 listings each.  These are working codes, called by run.bash in the source directory
+* trulia.py & trulia_sold.py -> original codes
+* trulia_iterate_sold.py & trulia_iterate_sale.py & trulia_iterate.py -> attempts at iteration through all listings
+* sold_XXX.py & sale_XXX.py -> working codes to pull listings in manually set clumps of 300 listings each.  These are working codes, called by run.bash in the source directory
 
 ### Prerequisites
 
