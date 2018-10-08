@@ -61,7 +61,7 @@ DOWNLOADER_MIDDLEWARES = {
 
 # crawlera - pay for
 CRAWLERA_ENABLED = True
-CRAWLERA_APIKEY = '8684a216e37a41e1b5cfe01b4d4aa8a5'
+CRAWLERA_APIKEY = 'INSERTAPIKEYHERE:'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
