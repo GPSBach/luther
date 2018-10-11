@@ -17,7 +17,7 @@ Read in data
 # sold data
 #sold = pd.read_json('sold2.jl',lines=True)
 
-# sale data
+# scrapy sale data
 sale = pd.read_json('sale_allscrapes.jl',lines=True)
 
 income = pd.read_csv('income_zip.csv')
@@ -84,8 +84,8 @@ arrival_time = datetime.now()
 arrival_time = arrival_time.replace(minute=30, hour=8, second=0, year=2018, month=11, day=19)
 
 #subset size
-diff =100
-subsets = list(range(0,8000,diff))
+diff =84
+subsets = list(range(8000,8100,diff))
 
 for Q in subsets:
     
