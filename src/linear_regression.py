@@ -17,12 +17,13 @@ from sklearn.cross_validation import train_test_split
 from sklearn.cross_validation import KFold
 from sklearn.metrics import mean_squared_error
 from sklearn.cross_validation import cross_val_score
-%matplotlib inline
+#matplotlib inline
 
 """
 Functions
 """
 
+### function to calculate NMSE manually
 def calc_NMSE_error(X, y, model):
     '''returns in-sample error for already fit model.'''
     predictions = model.predict(X)
@@ -30,37 +31,28 @@ def calc_NMSE_error(X, y, model):
     nmse = -1*mse
     return nmse
 
-with open("../data/iterate/regression_data.pkl", 'rb') as picklefile:
-    sale = pkl.load(picklefile)
-    
-# potential zipcode filter to NW side
-zips_nw = [60611, 60610, 60654, 60642,
-           60622, 60647, 60614, 60657,
-           60639, 60641, 60630, 60618,
-           60613, 60640, 60625, 60660,
-           60626, 60659, 60645]
-
-sale = sale[sale['zipcode'].isin(zips_nw)]
 
 with open("../data/iterate/luther_model_data_full.pkl", 'rb') as picklefile:
     sale = pkl.load(picklefile)
     
-# potential zipcode filter to NW side
-zips_nw = [60611, 60610, 60654, 60642,
-           60622, 60647, 60614, 60657,
-           60639, 60641, 60630, 60618,
-           60613, 60640, 60625, 60660,
-           60626, 60659, 60645]
-
-sale = sale[sale['zipcode'].isin(zips_nw)]
 
 ''''''
 """
 build/filter/transform target and features
 """
 
-model_params = ['price','bedrooms','bathrooms','area','median_income','duration_float','lot_size','year_built']
+# potential zipcode filter to NW side
+zips_nw = [60611, 60610, 60654, 60642,
+           60622, 60647, 60614, 60657,
+           60639, 60641, 60630, 60618,
+           60613, 60640, 60625, 60660,
+           60626, 60659, 60645]
 
+sale = sale[sale['zipcode'].isin(zips_nw)]
+
+
+# filter down to parameters of interest for model
+model_params = ['price','bedrooms','bathrooms','area','median_income','duration_float','lot_size','year_built']
 sale = sale.dropna(subset = model_params)
 
 # filter down to correlation parameters
@@ -69,8 +61,10 @@ model = sale[model_params]
 #filter out outliers
 model = model[(np.abs(stats.zscore(model)) < 3).all(axis=1)]
 
+
+# transform variables based on previous modeling and distributions
 model['price']=model['price'].apply(np.log10)
-model['area']=model['area'].apply(np.log10)
+#model['area']=model['area'].apply(np.log10)
 
 print('Total model data points after filtering: ' + str(model.shape[0]))
 print('Number of features: ' + str(model.shape[1]))
@@ -92,7 +86,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3333333)
 
 ### cross validation testing
 #setting up as a polynomial but using degree 1, just to have the easy option later
-degree = 2
+degree = 1
 est = make_pipeline(PolynomialFeatures(degree), LinearRegression())
 lr = LinearRegression(fit_intercept=True)
 
@@ -140,7 +134,29 @@ print('Model R^2 of: ' + str(final_error))
 
 # fit to model
 final_model = cv2.fit(X,y)
-
-# make a plot
 y_pred = final_model.predict(X)
-ax = sns.regplot(10**y,10**y_pred,ci=100)
+
+# """
+# make a plot
+# """
+
+# dirname = '/Users/tbowling/ds/metis/working/projects/luther/plots'
+# #fig=plt.figure()
+# #ax=fig.add_subplot(111,aspect='equal')
+# sns.set()
+# regul = sns.regplot(model.duration_float,10**y)
+# #regul.set_xlim([0,1000000])
+# #regul.set_ylim([0,1000000])
+# #regul.set_xlabel('Actual Price [$]')
+# #regul.set_ylabel('Predicted Price [$]')
+
+# fig = regul.get_figure()
+
+# fig.savefig('{}/price_duration.png'.format(dirname))
+
+
+
+
+
+
+

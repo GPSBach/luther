@@ -13,13 +13,10 @@ import json
 """
 Read in data
 """
-
-# sold data
-#sold = pd.read_json('sold2.jl',lines=True)
-
 # scrapy sale data
 sale = pd.read_json('sale_allscrapes.jl',lines=True)
 
+# census bereau median income data
 income = pd.read_csv('income_zip.csv')
 
 """
@@ -111,13 +108,6 @@ for Q in subsets:
 
     """
     Parse each google directions api query and format and input into the dataframe.
-
-    First, query the Google directions API to get transit direction details
-
-    The API output is a series of nested 'legs' and 'steps' which may be walking or transit steps
-    The nesting is unpredictable and complex.  This code loops through each 'leg' and subsequent 'step'.
-    Each time it happens upon a variable of interest, it appends it to an output list.
-    These output lists are then fed back into the data structure.
 
     Note: be careful, directions API queries are $0.01/per
 
