@@ -13,10 +13,10 @@ from sklearn import metrics
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
-from sklearn.cross_validation import train_test_split
-from sklearn.cross_validation import KFold
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
-from sklearn.cross_validation import cross_val_score
+from sklearn.model_selection import cross_val_score
 #matplotlib inline
 
 """
@@ -48,7 +48,7 @@ zips_nw = [60611, 60610, 60654, 60642,
            60613, 60640, 60625, 60660,
            60626, 60659, 60645]
 
-sale = sale[sale['zipcode'].isin(zips_nw)]
+#sale = sale[sale['zipcode'].isin(zips_nw)]
 
 
 # filter down to parameters of interest for model
@@ -80,7 +80,7 @@ X = StandardScaler().fit_transform(model)
 X_training, X_holdout, y_training, y_holdout = train_test_split(X, y, test_size=0.2)
 
 # now split out another 20% for cross validation
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3333333)
+X_train, X_test, y_train, y_test = train_test_split(X_training, y_training, test_size=0.25)
 
 #build initial regression model
 
@@ -108,21 +108,23 @@ reduce parameters with lasso
 
 # make model with Lasso grid search on train subset of data
 lasso = Lasso()
+ridge = Ridge()
 alphas = np.logspace(-5,1,num=6)
 params = {'alpha': alphas, 'fit_intercept': [True,False]}
 grid = GridSearchCV(lasso,params, cv=10, scoring='neg_mean_squared_error', n_jobs=1)
 reduce_fit = make_pipeline(PolynomialFeatures(degree), grid)
 reduce_fit.fit(X_train, y_train)
 #print(reduce_fit.named_steps['gridsearchcv'].best_params_)
-print('NMSE on tuned training set: '
-      + str(reduce_fit.named_steps['gridsearchcv'].best_score_))
-#print(reduce_fit.named_steps['gridsearchcv'].best_estimator_.coef_[0:])
+#print('NMSE on tuned training set: '
+#      + str(reduce_fit.named_steps['gridsearchcv'].best_score_))
+print(reduce_fit.named_steps['gridsearchcv'].best_estimator_.coef_[0:])
 
 # check for overfitting by testing against 
 cv2 = reduce_fit.named_steps['gridsearchcv'].best_estimator_
 cv2.fit(X_train,y_train)
-print('NMSE on tuned test set: '
-      + str(calc_NMSE_error(X_test,y_test,cv2)))
+#print('NMSE on tuned test set CV: '
+#      + str(calc_NMSE_error(X_test,y_test,cv2)))
+print('R^2 on tuned test set CV: ' + str(cv2.score(X_test,y_test)))
 
 """
 Final Model
@@ -130,7 +132,7 @@ Final Model
 # errors on holdout
 errors_fit = cv2.fit(X_training,y_training)
 final_error = errors_fit.score(X_holdout,y_holdout)
-print('Model R^2 of: ' + str(final_error))
+print('R^2 of final model: ' + str(final_error))
 
 # fit to model
 final_model = cv2.fit(X,y)
@@ -140,19 +142,19 @@ y_pred = final_model.predict(X)
 # make a plot
 # """
 
-# dirname = '/Users/tbowling/ds/metis/working/projects/luther/plots'
-# #fig=plt.figure()
-# #ax=fig.add_subplot(111,aspect='equal')
-# sns.set()
-# regul = sns.regplot(model.duration_float,10**y)
-# #regul.set_xlim([0,1000000])
-# #regul.set_ylim([0,1000000])
-# #regul.set_xlabel('Actual Price [$]')
-# #regul.set_ylabel('Predicted Price [$]')
+dirname = '/Users/tbowling/Desktop/luther_preso/blog'
+#fig=plt.figure()
+#ax=fig.add_subplot(111,aspect='equal')
+sns.set()
+regul = sns.regplot(1e-3*10**y,1e-3*10**y_pred,ci=99.9999)
+regul.set_xlim([0,3000])
+regul.set_ylim([0,3000])
+regul.set_xlabel('Actual Price [hundred thousand $]')
+regul.set_ylabel('Predicted Price [hundred thousand $]')
 
-# fig = regul.get_figure()
+fig = regul.get_figure()
 
-# fig.savefig('{}/price_duration.png'.format(dirname))
+fig.savefig('{}/price_price_full.png'.format(dirname))
 
 
 
